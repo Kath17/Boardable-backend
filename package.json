@@ -7,7 +7,12 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node build/index.js",
-    "test": "NODE_ENV=test vitest"
+    "test": "NODE_ENV=test vitest",
+    "db:migrate": "ts-node src/db/scripts/dbMigrate.ts",
+    "db:create": "ts-node src/db/scripts/dbCreate.ts",
+    "db:drop": "ts-node src/db/scripts/dbDrop.ts",
+    "db:reset": "npm run db:drop && npm run db:create && npm run db:migrate up",
+    "db:seed": "ts-node src/db/scripts/dbSeed.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
