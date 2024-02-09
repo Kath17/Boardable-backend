@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import { formatIssues } from "../utils/formatIssues";
 
-export class KeepError extends Error {
+export class BoardableError extends Error {
   statusCode: number;
   type: string;
   details: string;
@@ -27,7 +27,7 @@ export class KeepError extends Error {
 }
 
 export default function errorHandler(
-  error: Error | ZodError | KeepError,
+  error: Error | ZodError | BoardableError,
   _req: Request,
   res: Response,
   _next: NextFunction
@@ -38,7 +38,7 @@ export default function errorHandler(
       message: "Error en validación",
       details: formatIssues(error.issues),
     });
-  } else if (error instanceof KeepError) {
+  } else if (error instanceof BoardableError) {
     res.status(error.statusCode).json({
       ok: false,
       message: error.message,
