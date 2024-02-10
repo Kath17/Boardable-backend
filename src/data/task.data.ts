@@ -18,3 +18,12 @@ export async function getTasks(
     throw new BoardableError("Couldn't get task", 403, "Data Error", error);
   }
 }
+
+export async function getTaskById(task_id: string): Promise<Task> {
+  try {
+    return (await query(`SELECT * FROM tasks WHERE id = $1;`, [task_id]))
+      .rows[0];
+  } catch (error) {
+    throw new BoardableError("Task not found", 404, "Data Error", error);
+  }
+}
