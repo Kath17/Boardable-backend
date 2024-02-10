@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { BoardableError } from "../middlewares/error.middleware";
-import { getTaskById, getTasks } from "../services/task.service";
+import { createTask, getTaskById, getTasks } from "../services/task.service";
 
 export async function getTasksController(
   req: Request,
@@ -43,6 +43,32 @@ export async function getTaskByIdController(
     } else {
       next(
         new BoardableError(`Task not found`, 404, "Controller Error", error)
+      );
+    }
+  }
+}
+
+export async function createTaskController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { username, boardId, cardId } = req.params;
+    const newTask = req.body;
+    const task = await createTask(username, boardId, cardId, newTask);
+    res.status(201).json({ ok: true, task: task });
+  } catch (error) {
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(
+          `Couldn't create task`,
+          500,
+          "Controller Error",
+          error
+        )
       );
     }
   }

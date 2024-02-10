@@ -66,7 +66,8 @@ export async function createCard(
     if (!user) throw new BoardableError("User not found", 404, "UserNotFound");
 
     const board = await getBoardById(username, boardId);
-    if (!board) throw new BoardableError("Card not found", 404, "CardNotFound");
+    if (!board)
+      throw new BoardableError("Board not found", 404, "BoardNotFound");
 
     return await cardDB.createCard(user.id, board.id, newCard);
   } catch (error) {
