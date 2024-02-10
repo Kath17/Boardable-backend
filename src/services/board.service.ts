@@ -1,4 +1,4 @@
-import * as noteDB from "../data/board.data";
+import * as boardDB from "../data/board.data";
 import { BoardableError } from "../middlewares/error.middleware";
 import { Board, BoardParams } from "../models/board.model";
 import { getUserByUsername } from "./user.service";
@@ -10,7 +10,7 @@ export async function getBoards(username: string): Promise<Board[]> {
     if (!user) {
       throw new BoardableError("User not found", 404, "UserNotFound");
     }
-    return await noteDB.getBoards(user.username);
+    return await boardDB.getBoards(user.username);
   } catch (error) {
     throw error;
   }
@@ -29,7 +29,7 @@ export async function getBoardById(
         "Service Error"
       );
     }
-    const board = await noteDB.getBoardById(board_id);
+    const board = await boardDB.getBoardById(board_id);
     if (!board) {
       throw new BoardableError(`Board doesn't exist`, 404, "Service Error");
     }
@@ -56,7 +56,7 @@ export async function createBoard(
     if (!user) {
       throw new BoardableError("User not found", 404, "UserNotFound");
     }
-    return await noteDB.createBoard(user, newBoard);
+    return await boardDB.createBoard(user, newBoard);
   } catch (error) {
     throw error;
   }

@@ -13,5 +13,7 @@ const boardRouter = express.Router({ mergeParams: true });
 boardRouter.get("/", getBoardsController);
 boardRouter.post("/", validationMiddleware(BoardSchema), createBoardController);
 boardRouter.get("/:boardId", getBoardByIdController);
+//boardRouter.post("/:boardId", validationMiddleware(BoardEditSchema), updateBoardController);
+//boardRouter.delete("/:boardId", deleteBoardController);
 
 export default boardRouter;

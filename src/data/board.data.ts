@@ -41,6 +41,6 @@ export async function createBoard(
       )
     ).rows[0];
   } catch (error) {
-    throw new BoardableError("Couldn't create note", 403, "Data Error", error);
+    throw new BoardableError("Couldn't create board", 403, "Data Error", error);
   }
 }
