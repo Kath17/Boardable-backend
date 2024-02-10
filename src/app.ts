@@ -18,6 +18,6 @@ app.use(express.json());
 app.use("/api", userRouter);
 app.use("/api/:username/boards", boardRouter);
 app.use("/api/:username/boards/:boardId/cards", cardRouter);
-app.use("/api/:username/boards/:boardId/cards/:taskId", taskRouter);
+app.use("/api/:username/boards/:boardId/cards/:cardId/tasks", taskRouter);
 
 app.use(errorHandler);
