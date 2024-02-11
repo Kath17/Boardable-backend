@@ -1,10 +1,12 @@
 import express from "express";
 import { validationMiddleware } from "../middlewares/validation.middleware";
-import { CardSchema } from "../models/card.model";
+import { CardEditSchema, CardSchema } from "../models/card.model";
 import {
   createCardController,
   getCardByIdController,
   getCardsController,
+  updateCardController,
+  deleteCardController,
 } from "../controllers/card.controller";
 import { authenticateHandler } from "../middlewares/user-auth.middleware";
 
@@ -18,7 +20,12 @@ cardRouter.post(
   createCardController
 );
 cardRouter.get("/:cardId", authenticateHandler, getCardByIdController);
-//cardRouter.post("/", validationMiddleware(CardSchema), updateCardController);
-//cardRouter.delete("/:cardId", deleteCardController);
+cardRouter.patch(
+  "/:cardId",
+  authenticateHandler,
+  validationMiddleware(CardEditSchema),
+  updateCardController
+);
+cardRouter.delete("/:cardId", authenticateHandler, deleteCardController);
 
 export default cardRouter;

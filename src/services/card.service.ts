@@ -1,7 +1,7 @@
 import * as cardDB from "../data/card.data";
 import * as boardDB from "../data/board.data";
 import { BoardableError } from "../middlewares/error.middleware";
-import { Card, CardParams } from "../models/card.model";
+import { Card, CardParams, CardParamsEdit } from "../models/card.model";
 import { getBoardById } from "./board.service";
 import { getUserByUsername } from "./user.service";
 
@@ -70,6 +70,33 @@ export async function createCard(
       throw new BoardableError("Board not found", 404, "BoardNotFound");
 
     return await cardDB.createCard(user.id, board.id, newCard);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateCard(
+  username: string,
+  board_id: string,
+  card_id: string,
+  newCard: CardParamsEdit
+): Promise<Card> {
+  try {
+    await getCardById(username, board_id, card_id);
+    return await cardDB.updateCard(card_id, newCard);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteCard(
+  username: string,
+  board_id: string,
+  card_id: string
+): Promise<Card> {
+  try {
+    await getBoardById(username, board_id);
+    return await cardDB.deleteCard(card_id);
   } catch (error) {
     throw error;
   }

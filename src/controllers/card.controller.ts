@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-
 import { BoardableError } from "../middlewares/error.middleware";
-import { createCard, getCardById, getCards } from "../services/card.service";
+import {
+  createCard,
+  deleteCard,
+  getCardById,
+  getCards,
+  updateCard,
+} from "../services/card.service";
 
 export async function getCardsController(
   req: Request,
@@ -66,6 +71,57 @@ export async function createCardController(
       next(
         new BoardableError(
           `Couldn't create card`,
+          500,
+          "Controller Error",
+          error
+        )
+      );
+    }
+  }
+}
+
+export async function updateCardController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { username, boardId, cardId } = req.params;
+  try {
+    const newCard = req.body;
+    const updatedCard = await updateCard(username, boardId, cardId, newCard);
+    res.status(200).json({ ok: true, card: updatedCard });
+  } catch (error) {
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(
+          `Couldn't update card`,
+          500,
+          "Controller Error",
+          error
+        )
+      );
+    }
+  }
+}
+
+export async function deleteCardController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { username, boardId, cardId } = req.params;
+    await deleteCard(username, boardId, cardId);
+    res.status(200).json({ ok: true });
+  } catch (error) {
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(
+          `Couldn't delete card`,
           500,
           "Controller Error",
           error

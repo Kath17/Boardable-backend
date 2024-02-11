@@ -81,7 +81,7 @@ export async function deleteBoard(
 ): Promise<Board> {
   try {
     await getBoardById(username, board_id);
-    return await boardDB.deleteNote(board_id);
+    return await boardDB.deleteBoard(board_id);
   } catch (error) {
     throw error;
   }

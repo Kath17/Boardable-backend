@@ -51,10 +51,10 @@ export async function updateBoard(
   newBoard: BoardParamsEdit
 ): Promise<Board> {
   try {
-    let noteStringify = StringifyObject(newBoard);
+    let boardStringify = StringifyObject(newBoard);
     return (
       await query(
-        `UPDATE boards SET ${noteStringify} WHERE id = $1 RETURNING *;`,
+        `UPDATE boards SET ${boardStringify} WHERE id = $1 RETURNING *;`,
         [board_id]
       )
     ).rows[0];
@@ -63,7 +63,7 @@ export async function updateBoard(
   }
 }
 
-export async function deleteNote(board_id: string): Promise<Board> {
+export async function deleteBoard(board_id: string): Promise<Board> {
   try {
     return (
       await query(`DELETE FROM boards WHERE id = $1 RETURNING *;`, [board_id])

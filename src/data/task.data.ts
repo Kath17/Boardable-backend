@@ -10,7 +10,7 @@ export async function getTasks(
   try {
     return (
       await query(
-        `SELECT * FROM tasks WHERE user_id = $1 AND board_id = $2 AND card_id = $3;`,
+        `SELECT * FROM tasks WHERE user_id = $1 AND board_id = $2 AND card_id = $3 ORDER BY id;`,
         [userId, boardId, cardId]
       )
     ).rows;
