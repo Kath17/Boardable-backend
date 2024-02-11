@@ -1,11 +1,13 @@
 import express from "express";
 
 import { validationMiddleware } from "../middlewares/validation.middleware";
-import { BoardSchema } from "../models/board.model";
+import { BoardEditSchema, BoardSchema } from "../models/board.model";
 import {
   createBoardController,
   getBoardByIdController,
   getBoardsController,
+  updateBoardController,
+  deleteBoardController,
 } from "../controllers/board.controller";
 import { authenticateHandler } from "../middlewares/user-auth.middleware";
 
@@ -19,7 +21,12 @@ boardRouter.post(
   createBoardController
 );
 boardRouter.get("/:boardId", authenticateHandler, getBoardByIdController);
-//boardRouter.post("/:boardId", validationMiddleware(BoardEditSchema), updateBoardController);
-//boardRouter.delete("/:boardId", deleteBoardController);
+boardRouter.patch(
+  "/:boardId",
+  authenticateHandler,
+  validationMiddleware(BoardEditSchema),
+  updateBoardController
+);
+boardRouter.delete("/:boardId", authenticateHandler, deleteBoardController);
 
 export default boardRouter;

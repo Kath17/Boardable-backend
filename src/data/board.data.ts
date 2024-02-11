@@ -1,8 +1,9 @@
 import { query } from "../db";
 import { BoardableError } from "../middlewares/error.middleware";
-import { Board, BoardParams } from "../models/board.model";
+import { Board, BoardParams, BoardParamsEdit } from "../models/board.model";
 import { User } from "../models/user.model";
 import { getUserByUsername } from "../services/user.service";
+import { StringifyObject } from "./utils";
 
 export async function getBoards(username: string): Promise<Board[]> {
   try {
@@ -42,5 +43,32 @@ export async function createBoard(
     ).rows[0];
   } catch (error) {
     throw new BoardableError("Couldn't create board", 403, "Data Error", error);
+  }
+}
+
+export async function updateBoard(
+  board_id: string,
+  newBoard: BoardParamsEdit
+): Promise<Board> {
+  try {
+    let noteStringify = StringifyObject(newBoard);
+    return (
+      await query(
+        `UPDATE boards SET ${noteStringify} WHERE id = $1 RETURNING *;`,
+        [board_id]
+      )
+    ).rows[0];
+  } catch (error) {
+    throw new BoardableError("Couldn't edit board", 403, "Data Error", error);
+  }
+}
+
+export async function deleteNote(board_id: string): Promise<Board> {
+  try {
+    return (
+      await query(`DELETE FROM boards WHERE id = $1 RETURNING *;`, [board_id])
+    ).rows[0];
+  } catch (error) {
+    throw new BoardableError("Couldn't delete board", 403, "Data Error", error);
   }
 }

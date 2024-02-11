@@ -61,3 +61,28 @@ export async function createBoard(
     throw error;
   }
 }
+
+export async function updateBoard(
+  username: string,
+  board_id: string,
+  newBoard: BoardParams
+): Promise<Board> {
+  try {
+    await getBoardById(username, board_id);
+    return await boardDB.updateBoard(board_id, newBoard);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteBoard(
+  username: string,
+  board_id: string
+): Promise<Board> {
+  try {
+    await getBoardById(username, board_id);
+    return await boardDB.deleteNote(board_id);
+  } catch (error) {
+    throw error;
+  }
+}
