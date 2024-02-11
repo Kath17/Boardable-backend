@@ -2,7 +2,7 @@ import * as taskDB from "../data/task.data";
 import * as boardDB from "../data/board.data";
 import * as cardDB from "../data/card.data";
 import { BoardableError } from "../middlewares/error.middleware";
-import { Task, TaskParams } from "../models/task.model";
+import { Task, TaskParams, TaskParamsEdit } from "../models/task.model";
 import { getBoardById } from "./board.service";
 import { getCardById } from "./card.service";
 import { getUserByUsername } from "./user.service";
@@ -87,6 +87,35 @@ export async function createTask(
     if (!card) throw new BoardableError("Card not found", 404, "CardNotFound");
 
     return await taskDB.createTask(user.id, board.id, card.id, newTask);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateTask(
+  username: string,
+  board_id: string,
+  card_id: string,
+  task_id: string,
+  newTask: TaskParamsEdit
+): Promise<Task> {
+  try {
+    await getTaskById(username, board_id, card_id, task_id);
+    return await taskDB.updateTask(task_id, newTask);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteTask(
+  username: string,
+  board_id: string,
+  card_id: string,
+  task_id: string
+): Promise<Task> {
+  try {
+    await getTaskById(username, board_id, card_id, task_id);
+    return await taskDB.deleteTask(task_id);
   } catch (error) {
     throw error;
   }
