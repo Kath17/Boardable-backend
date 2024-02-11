@@ -44,6 +44,7 @@ export default function errorHandler(
       message: error.message,
       details: {
         type: error.type,
+        statusCode: error.statusCode,
         details: error.details,
         timestamp: error.timesTamp,
         techInfo: error.techInfo,

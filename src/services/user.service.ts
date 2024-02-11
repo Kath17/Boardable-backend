@@ -27,9 +27,9 @@ export async function createUser(
 ): Promise<User> {
   try {
     const user = await userDB.getUserByUsername(username);
-    if (user) {
-      throw new BoardableError("Usuario ya existe", 403, "Service Error");
-    }
+    if (user)
+      throw new BoardableError("Username already exists", 403, "Service Error");
+
     return await userDB.createUser(username, password);
   } catch (error) {
     throw error;

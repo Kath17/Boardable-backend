@@ -7,12 +7,18 @@ import {
   getBoardByIdController,
   getBoardsController,
 } from "../controllers/board.controller";
+import { authenticateHandler } from "../middlewares/user-auth.middleware";
 
 const boardRouter = express.Router({ mergeParams: true });
 
-boardRouter.get("/", getBoardsController);
-boardRouter.post("/", validationMiddleware(BoardSchema), createBoardController);
-boardRouter.get("/:boardId", getBoardByIdController);
+boardRouter.get("/", authenticateHandler, getBoardsController);
+boardRouter.post(
+  "/",
+  authenticateHandler,
+  validationMiddleware(BoardSchema),
+  createBoardController
+);
+boardRouter.get("/:boardId", authenticateHandler, getBoardByIdController);
 //boardRouter.post("/:boardId", validationMiddleware(BoardEditSchema), updateBoardController);
 //boardRouter.delete("/:boardId", deleteBoardController);
 
