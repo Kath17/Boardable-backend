@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import { User, UserParams } from "../models/user.model";
 import * as userDB from "../data/user.data";
 import { BoardableError } from "../middlewares/error.middleware";
 
@@ -31,6 +31,21 @@ export async function createUser(
       throw new BoardableError("Username already exists", 403, "Service Error");
 
     return await userDB.createUser(username, password);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateUser(
+  username: string,
+  newUser: UserParams
+): Promise<User> {
+  try {
+    const user = await userDB.getUserByUsername(username);
+    if (!user)
+      throw new BoardableError("Username doesn't exist", 403, "Service Error");
+
+    return await userDB.updateUser(user.id, newUser);
   } catch (error) {
     throw error;
   }

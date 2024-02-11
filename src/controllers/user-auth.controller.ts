@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { BoardableError } from "../middlewares/error.middleware";
-import { createUser, getUserByUsername } from "../services/user.service";
+import {
+  createUser,
+  getUserByUsername,
+  updateUser,
+} from "../services/user.service";
 
 const jwtSecret = "ultra-secret";
 
@@ -13,8 +17,6 @@ const loginController = async (
 ) => {
   try {
     const { username, password } = req.body;
-    console.log("username: ", username);
-    console.log("password: ", password);
     const user = await getUserByUsername(username);
     const validPass = await bcrypt.compare(password, user.password);
 
@@ -32,7 +34,13 @@ const loginController = async (
       );
     }
   } catch (error) {
-    next(error);
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(`Couldn't LogIn`, 500, "Controller Error", error)
+      );
+    }
   }
 };
 
@@ -54,8 +62,39 @@ const signUpController = async (
       data: newUser,
     });
   } catch (error) {
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(`Couldn't SignUp`, 500, "Controller Error", error)
+      );
+    }
+  }
+};
+
+const updateUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username } = req.params;
+  try {
+    const costFactor = 10;
+    let newUser = req.body;
+
+    if (newUser.password)
+      newUser.password = await bcrypt.hash(newUser.password, costFactor);
+
+    const updatedUser = await updateUser(username, newUser);
+
+    res.status(201).json({
+      ok: true,
+      message: "Updated successful",
+      data: updatedUser,
+    });
+  } catch (error) {
     next(error);
   }
 };
 
-export { loginController, signUpController };
+export { loginController, signUpController, updateUserController };

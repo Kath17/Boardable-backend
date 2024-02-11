@@ -1,6 +1,7 @@
 import { query } from "../db";
 import { BoardableError } from "../middlewares/error.middleware";
-import { User } from "../models/user.model";
+import { User, UserParamsEdit } from "../models/user.model";
+import { StringifyObject } from "./utils";
 
 export async function getUsers(): Promise<User[]> {
   try {
@@ -23,6 +24,24 @@ export async function createUser(
     ).rows[0];
   } catch (error) {
     throw new BoardableError("Couldn't create user", 403, "Data Error", error);
+  }
+}
+
+export async function updateUser(
+  user_id: number,
+  newUser: UserParamsEdit
+): Promise<User> {
+  try {
+    let userStringify = StringifyObject(newUser);
+    console.log("userStringify: ", userStringify);
+    return (
+      await query(
+        `UPDATE users SET ${userStringify} WHERE id=$1 RETURNING *;`,
+        [user_id]
+      )
+    ).rows[0];
+  } catch (error) {
+    throw new BoardableError("Couldn't update user", 403, "Data Error", error);
   }
 }
 
