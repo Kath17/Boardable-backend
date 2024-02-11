@@ -4,6 +4,8 @@ export const up: Migration = async (params) => {
   params.context.query(`CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(50),
+    email VARCHAR(50),
     password VARCHAR(255) NOT NULL
 );
 `);
