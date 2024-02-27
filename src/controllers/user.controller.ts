@@ -36,10 +36,8 @@ export async function getUserByUsernameController(
   next: NextFunction
 ) {
   const { username } = req.params;
-  console.log("username: ", username);
   try {
     const user = await getUserByUsername(username);
-    console.log("user: ", user);
     res.status(200).json({ ok: true, message: "User found", data: user });
   } catch (error) {
     if (error instanceof BoardableError) {

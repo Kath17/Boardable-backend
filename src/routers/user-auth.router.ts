@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  deleteUserController,
   loginController,
   signUpController,
   updateUserController,
@@ -17,4 +18,9 @@ authRouter.patch(
   authenticateHandler,
   validationMiddleware(UserEditSchema),
   updateUserController
+);
+authRouter.delete(
+  "/delete/:username",
+  authenticateHandler,
+  deleteUserController
 );

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { BoardableError } from "../middlewares/error.middleware";
 import {
   createUser,
+  deleteUser,
   getUserByUsername,
   updateUser,
 } from "../services/user.service";
@@ -22,7 +23,7 @@ const loginController = async (
 
     if (validPass) {
       const payload = { userId: user.id };
-      const token = jwt.sign(payload, jwtSecret, { expiresIn: "4h" });
+      const token = jwt.sign(payload, jwtSecret, { expiresIn: "8h" });
       res
         .status(200)
         .json({ ok: true, message: "Login exitoso", data: { token } });
@@ -55,11 +56,13 @@ const signUpController = async (
     let newUser = req.body;
     newUser.password = await bcrypt.hash(newUser.password, costFactor);
     newUser = await createUser(newUser.username, newUser.password);
+    const payload = { userId: newUser.id };
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: "8h" });
 
     res.status(201).json({
       ok: true,
       message: "Register successful",
-      data: newUser,
+      data: { newUser, token },
     });
   } catch (error) {
     if (error instanceof BoardableError) {
@@ -93,8 +96,43 @@ const updateUserController = async (
       data: updatedUser,
     });
   } catch (error) {
-    next(error);
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(`Couldn't Update`, 500, "Controller Error", error)
+      );
+    }
   }
 };
 
-export { loginController, signUpController, updateUserController };
+const deleteUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username } = req.params;
+  try {
+    const deletedUser = await deleteUser(username);
+    res.status(200).json({
+      ok: true,
+      message: "Deleted successful",
+      data: deletedUser,
+    });
+  } catch (error) {
+    if (error instanceof BoardableError) {
+      next(error);
+    } else {
+      next(
+        new BoardableError(`Couldn't Delete`, 500, "Controller Error", error)
+      );
+    }
+  }
+};
+
+export {
+  loginController,
+  signUpController,
+  updateUserController,
+  deleteUserController,
+};

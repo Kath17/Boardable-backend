@@ -1,6 +1,7 @@
 import { User, UserParams } from "../models/user.model";
 import * as userDB from "../data/user.data";
 import { BoardableError } from "../middlewares/error.middleware";
+import { deleteBoard, getBoards } from "./board.service";
 
 export async function getUsers(): Promise<User[]> {
   try {
@@ -46,6 +47,22 @@ export async function updateUser(
       throw new BoardableError("Username doesn't exist", 403, "Service Error");
 
     return await userDB.updateUser(user.id, newUser);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteUser(username: string): Promise<User> {
+  try {
+    const user = await userDB.getUserByUsername(username);
+    if (!user)
+      throw new BoardableError("Username doesn't exist", 403, "Service Error");
+
+    const boards = await getBoards(username);
+    for (const board of boards) {
+      await deleteBoard(username, board.id.toString());
+    }
+    return await userDB.deleteUser(user.id);
   } catch (error) {
     throw error;
   }

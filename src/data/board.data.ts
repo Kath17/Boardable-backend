@@ -32,7 +32,6 @@ export async function createBoard(
   newBoard: BoardParams
 ): Promise<Board> {
   try {
-    console.log("newBoard: ", newBoard);
     const { title, color } = newBoard;
 
     return (

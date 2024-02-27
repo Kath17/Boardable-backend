@@ -4,13 +4,14 @@ import { BoardableError } from "../middlewares/error.middleware";
 import { Card, CardParams, CardParamsEdit } from "../models/card.model";
 import { getBoardById } from "./board.service";
 import { getUserByUsername } from "./user.service";
+import { getTasks } from "./task.service";
+import * as taskDB from "../data/task.data";
 
 export async function getCards(
   username: string,
   boardId: string
 ): Promise<Card[]> {
   try {
-    console.log("username: ", username);
     const user = await getUserByUsername(username);
     if (!user) throw new BoardableError("User not found", 404, "UserNotFound");
     const board = await getBoardById(username, boardId);
@@ -95,7 +96,11 @@ export async function deleteCard(
   card_id: string
 ): Promise<Card> {
   try {
-    await getBoardById(username, board_id);
+    await getCardById(username, board_id, card_id);
+    const tasks = await getTasks(username, board_id, card_id);
+    for (const task of tasks) {
+      await taskDB.deleteTask(task.id.toString());
+    }
     return await cardDB.deleteCard(card_id);
   } catch (error) {
     throw error;

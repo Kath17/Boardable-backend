@@ -34,7 +34,6 @@ export async function createCard(
   newCard: CardParams
 ): Promise<Card> {
   try {
-    console.log("newCard: ", newCard);
     const { title } = newCard;
 
     return (

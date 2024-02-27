@@ -33,7 +33,6 @@ export async function updateUser(
 ): Promise<User> {
   try {
     let userStringify = StringifyObject(newUser);
-    console.log("userStringify: ", userStringify);
     return (
       await query(
         `UPDATE users SET ${userStringify} WHERE id=$1 RETURNING *;`,
@@ -42,6 +41,16 @@ export async function updateUser(
     ).rows[0];
   } catch (error) {
     throw new BoardableError("Couldn't update user", 403, "Data Error", error);
+  }
+}
+
+export async function deleteUser(user_id: number): Promise<User> {
+  try {
+    return (
+      await query(`DELETE FROM users WHERE id = $1 RETURNING *;`, [user_id])
+    ).rows[0];
+  } catch (error) {
+    throw new BoardableError("Couldn't delete user", 403, "Data Error", error);
   }
 }
 
