@@ -1,7 +1,7 @@
 import { app } from "./app";
 import { pool } from "./db";
 
-const port = 5500;
+const port = process.env["PORT"] || 5500;
 
 const gracefulShutdown = () => {
   pool.end(() => {

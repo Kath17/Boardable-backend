@@ -1,5 +1,6 @@
 import { configDotenv } from "dotenv";
 import express from "express";
+import cors from "cors";
 import errorHandler from "./middlewares/error.middleware";
 import userRouter from "./routers/user.router";
 import boardRouter from "./routers/board.router";
@@ -14,6 +15,13 @@ if (process.env["NODE_ENV"] === "test") {
 }
 
 export const app = express();
+
+const corsOptions = {
+  origin: process.env["CLIENT_ORIGIN"],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use("/api", userRouter);
